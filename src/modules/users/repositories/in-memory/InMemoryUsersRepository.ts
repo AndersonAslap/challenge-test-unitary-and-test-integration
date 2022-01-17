@@ -6,8 +6,10 @@ import { IUsersRepository } from "../IUsersRepository";
 export class InMemoryUsersRepository implements IUsersRepository {
   private users: User[] = [];
 
-  async findByEmail(email: string): Promise<User | undefined> {
-    return this.users.find(user => user.email === email);
+  async findByEmail(email: string): Promise<User> {
+   
+    const user = this.users.find(user => user.email === email);
+    return user;
   }
 
   async findById(user_id: string): Promise<User | undefined> {
@@ -18,6 +20,7 @@ export class InMemoryUsersRepository implements IUsersRepository {
     const user = new User();
     Object.assign(user, data);
     this.users.push(user);
+
     return user;
   }
 }
