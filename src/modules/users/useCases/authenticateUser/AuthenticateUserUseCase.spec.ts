@@ -1,4 +1,5 @@
 
+import { hash } from "bcryptjs";
 import { InMemoryUsersRepository } from "../../repositories/in-memory/InMemoryUsersRepository";
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
 
@@ -15,19 +16,21 @@ describe("User Profile", () => {
 
     it("should be able to authenticate user", async () => {
 
+        let password = await hash("123456", 8);
+
         const user = await usersRepositoryInMemory.create({
             name:"anderson", 
             email:"anderson@gmail.com", 
-            password: "123456"
+            password: password
         });
 
         const infoUserLogger = await authenticateUserUseCase.execute(
             {
                 email: user.email,
-                password: user.password
+                password: "123456"
             }
         )
 
-        console.log(infoUserLogger)
+        expect(infoUserLogger).toHaveProperty("token")
     })
 })
