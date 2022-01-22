@@ -8,6 +8,11 @@ let statementsRepositoryInMemory : InMemoryStatementsRepository;
 let usersRepositoryInMemory : InMemoryUsersRepository;
 let getStatementOperationUseCase : GetStatementOperationUseCase;
 
+enum OperationType {
+    DEPOSIT = 'deposit',
+    WITHDRAW = 'withdraw',
+}
+
 describe("Statements", () => {
 
     beforeEach(() => {
@@ -26,7 +31,7 @@ describe("Statements", () => {
 
         const statementObject : ICreateStatementDTO = {
             user_id: user.id,
-            type: 'deposit',
+            type: OperationType.DEPOSIT,
             amount: 100,
             description: "Transferência pix"
         }
@@ -50,7 +55,7 @@ describe("Statements", () => {
     
             const statementObject : ICreateStatementDTO = {
                 user_id: user.id,
-                type: 'deposit',
+                type: OperationType.DEPOSIT,
                 amount: 100,
                 description: "Transferência pix"
             }
@@ -71,12 +76,12 @@ describe("Statements", () => {
     
             const statementObject : ICreateStatementDTO = {
                 user_id: user.id,
-                type: 'deposit',
+                type: OperationType.DEPOSIT,
                 amount: 100,
                 description: "Transferência pix"
             }
     
-            const statement = await statementsRepositoryInMemory.create(statementObject);
+            await statementsRepositoryInMemory.create(statementObject);
     
             await getStatementOperationUseCase.execute({user_id:user.id, statement_id:"123456"});
         }).rejects.toBeInstanceOf(GetStatementOperationError.StatementNotFound)

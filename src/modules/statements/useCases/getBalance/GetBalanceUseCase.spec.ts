@@ -8,6 +8,12 @@ let usersRepositoryInMemory : InMemoryUsersRepository;
 let statementsRepositoryInMemory : InMemoryStatementsRepository;
 let getBalanceUseCase : GetBalanceUseCase;
 
+
+enum OperationType {
+    DEPOSIT = 'deposit',
+    WITHDRAW = 'withdraw',
+}
+
 describe("Balance", () => {
 
     beforeEach(() => {
@@ -26,7 +32,7 @@ describe("Balance", () => {
 
         const statementObject : ICreateStatementDTO= {
             user_id: user.id,
-            type: 'deposit',
+            type: OperationType.DEPOSIT,
             amount: 100,
             description: "Transferência pix"
         }

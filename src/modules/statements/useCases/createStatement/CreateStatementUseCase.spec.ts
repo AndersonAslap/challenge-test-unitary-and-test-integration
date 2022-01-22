@@ -8,7 +8,10 @@ let usersRepositoryInMemory : InMemoryUsersRepository;
 let statementsRepositoryInMemory : InMemoryStatementsRepository;
 let createStatementsUseCase : CreateStatementUseCase;
 
-
+enum OperationType {
+    DEPOSIT = 'deposit',
+    WITHDRAW = 'withdraw',
+}
 
 
 describe("Statements User", () => {
@@ -29,7 +32,7 @@ describe("Statements User", () => {
 
         const statementObject : ICreateStatementDTO= {
             user_id: user.id,
-            type: 'deposit',
+            type: OperationType.DEPOSIT,
             amount: 100,
             description: "Transferência pix"
         }
@@ -51,7 +54,7 @@ describe("Statements User", () => {
 
         const statementDeposit : ICreateStatementDTO= {
             user_id: user.id,
-            type: 'deposit',
+            type: OperationType.DEPOSIT,
             amount: 100,
             description: "Transferência pix"
         }
@@ -60,7 +63,7 @@ describe("Statements User", () => {
 
         const statementWIthdraw : ICreateStatementDTO= {
             user_id: user.id,
-            type: 'deposit',
+            type: OperationType.DEPOSIT,
             amount: 10,
             description: "Pagamento amazon prime"
         }
@@ -84,7 +87,7 @@ describe("Statements User", () => {
     
             const statementDeposit : ICreateStatementDTO = {
                 user_id: user.id,
-                type: 'deposit',
+                type: OperationType.DEPOSIT,
                 amount: 10,
                 description: "Transferência pix"
             }
@@ -93,7 +96,7 @@ describe("Statements User", () => {
     
             const statementWIthdraw : ICreateStatementDTO = {
                 user_id: user.id,
-                type: 'withdraw',
+                type: OperationType.WITHDRAW,
                 amount: 100,
                 description: "Pagamento amazon prime"
             }
