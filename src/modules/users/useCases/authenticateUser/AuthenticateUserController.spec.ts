@@ -19,42 +19,31 @@ describe("User Authenticate", () => {
         await connection.close();
     });
 
-
     it("should be able to create a token user", async () => {
-
-        const response = await request(app)
-                                .post("/api/v1/sessions")
-                                .send({
-                                    email: userDTO.email,
-                                    password: userDTO.password
-                                });
+        const response = await request(app).post("/api/v1/sessions").send({
+            email: userDTO.email,
+            password: userDTO.password
+        });
 
         expect(response.body).toHaveProperty("token");
-
     });
 
     it("should be able to create a token user, incorrect email", async () => {
-
         const response = await request(app).post("/api/v1/sessions").send({
             email:"",
             password: userDTO.password
         });
 
         expect(response.status).toBe(401);
-
     });
 
-
     it("should be able to create a token user, incorrect password", async () => {
-
         const response = await request(app).post("/api/v1/sessions").send({
             email:userDTO.email,
             password: ""
         });
 
         expect(response.status).toBe(401);
-
     });
-
 
 });

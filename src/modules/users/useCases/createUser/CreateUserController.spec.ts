@@ -1,12 +1,12 @@
 import { app } from "../../../../app";
 import { Connection, createConnection } from "typeorm";
-import request from "supertest";
-import { CreateUserError } from "./CreateUserError";
+import request, { Response } from "supertest";
+import { userDTO } from "../../dtos/userDTO";
 
 let connection : Connection;
+let response : Response;
 
 describe("Create User", () => {
-
     beforeAll(async () => {
         connection = await createConnection();
         await connection.runMigrations();
@@ -18,39 +18,17 @@ describe("Create User", () => {
     });
 
     it("should be able to create a new user", async () => {
-
-        const response = await request(app)
-            .post("/api/v1/users")
-            .send({
-                name: "Anderson",
-                email:"admin3@ignite.com.br",
-                password: "123456"
-            });
-
+        response = await request(app).post("/api/v1/users").send(userDTO);
+        
         expect(response.status).toBe(201);
     });
 
     it("should not be able create a new user", async () => {
-        expect(async () => {
-            
-            await request(app)
-            .post("/api/v1/users")
-            .send({
-                name: "Anderson 1",
-                email:"admin3@ignite.com.br",
-                password: "123456"
-            });
+        await request(app).post("/api/v1/users").send(userDTO);
+        
+        response = await request(app).post("/api/v1/users").send(userDTO);
 
-            await request(app)
-            .post("/api/v1/users")
-            .send({
-                name: "Anderson 2",
-                email:"admin3@ignite.com.br",
-                password: "123456"
-            });
-            
-        }).rejects.toBeInstanceOf(CreateUserError);
+        expect(response.status).toBe(400);
     });
 
-    
 });

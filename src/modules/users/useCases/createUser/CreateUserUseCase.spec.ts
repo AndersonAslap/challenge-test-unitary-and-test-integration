@@ -1,3 +1,4 @@
+import { userDTO } from "../../dtos/userDTO";
 import { InMemoryUsersRepository } from "../../repositories/in-memory/InMemoryUsersRepository";
 import { CreateUserError } from "./CreateUserError";
 import { CreateUserUseCase } from "./CreateUserUseCase";
@@ -12,28 +13,16 @@ describe("Create User", () => {
     })
 
     it("should be able to create a new user.", async () => {
-        const user = await createUserUseCase.execute({
-            name: "anderson",
-            email: "anderson2021@gmail.com",
-            password: "564565"
-        });
+        const user = await createUserUseCase.execute(userDTO);
 
         expect(user).toHaveProperty("id");
     });
 
-    it("should be able not create a user if user exists.", () => {
-        expect(async () => {
-            await createUserUseCase.execute({
-                name: "anderson",
-                email: "anderson2021@gmail.com",
-                password: "564565"
-            });
+    it("should be able not create a user if user exists.", async () => {
+        await createUserUseCase.execute(userDTO);
 
-            await createUserUseCase.execute({
-                name: "anderson",
-                email: "anderson2021@gmail.com",
-                password: "564565"
-            });
+        expect(async () => {
+            await createUserUseCase.execute(userDTO);
         }).rejects.toBeInstanceOf(CreateUserError);
     });
 })

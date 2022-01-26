@@ -1,36 +1,27 @@
-
-import { hash } from "bcryptjs";
+import { userDTO } from "../../dtos/userDTO";
 import { InMemoryUsersRepository } from "../../repositories/in-memory/InMemoryUsersRepository";
+import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
 
 let usersRepositoryInMemory : InMemoryUsersRepository;
 let authenticateUserUseCase : AuthenticateUserUseCase;
+let createUserUseCase : CreateUserUseCase;
 
 describe("User Profile", () => {
-
-
-    beforeEach(() => {
+    beforeEach(async () => {
         usersRepositoryInMemory = new InMemoryUsersRepository();
         authenticateUserUseCase = new AuthenticateUserUseCase(usersRepositoryInMemory)
+        createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory);
+        
+        await createUserUseCase.execute(userDTO);
     });
 
     it("should be able to authenticate user", async () => {
-
-        let password = await hash("123456", 8);
-
-        const user = await usersRepositoryInMemory.create({
-            name:"anderson", 
-            email:"anderson@gmail.com", 
-            password: password
+        const response = await authenticateUserUseCase.execute({
+            email: userDTO.email,
+            password: userDTO.password
         });
 
-        const infoUserLogger = await authenticateUserUseCase.execute(
-            {
-                email: user.email,
-                password: "123456"
-            }
-        )
-
-        expect(infoUserLogger).toHaveProperty("token")
+        expect(response).toHaveProperty("token");
     })
 })
