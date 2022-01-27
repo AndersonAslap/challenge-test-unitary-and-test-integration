@@ -10,13 +10,8 @@ describe("Create User", () => {
     beforeEach(() => {
         usersRepository = new InMemoryUsersRepository();
         createUserUseCase = new CreateUserUseCase(usersRepository);
-    })
-
-    it("should be able to create a new user.", async () => {
-        const user = await createUserUseCase.execute(userDTO);
-
-        expect(user).toHaveProperty("id");
     });
+
 
     it("should be able not create a user if user exists.", async () => {
         await createUserUseCase.execute(userDTO);
@@ -25,4 +20,11 @@ describe("Create User", () => {
             await createUserUseCase.execute(userDTO);
         }).rejects.toBeInstanceOf(CreateUserError);
     });
-})
+
+    it("should be able to create a new user.", async () => {
+        const user = await createUserUseCase.execute(userDTO);
+
+        expect(user).toHaveProperty("id");
+    });
+
+});

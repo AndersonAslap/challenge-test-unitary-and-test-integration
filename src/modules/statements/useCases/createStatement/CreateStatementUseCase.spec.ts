@@ -1,114 +1,48 @@
+import { createDepositStatementDTO, createWithdrawStatementDTO } from "../../dtos/index";
+import { userDTO } from "../../../users/dtos/userDTO";
+import { User } from "../../../users/entities/User";
+import { CreateUserUseCase } from "../../../users/useCases/createUser/CreateUserUseCase";
 import { InMemoryUsersRepository } from "../../../users/repositories/in-memory/InMemoryUsersRepository";
 import { InMemoryStatementsRepository } from "../../repositories/in-memory/InMemoryStatementsRepository"
 import { CreateStatementError } from "./CreateStatementError";
 import { CreateStatementUseCase } from "./CreateStatementUseCase";
-import { ICreateStatementDTO } from "./ICreateStatementDTO";
 
 let usersRepositoryInMemory : InMemoryUsersRepository;
 let statementsRepositoryInMemory : InMemoryStatementsRepository;
 let createStatementsUseCase : CreateStatementUseCase;
+let createUserUseCase : CreateUserUseCase;
 
-enum OperationType {
-    DEPOSIT = 'deposit',
-    WITHDRAW = 'withdraw',
-}
-
+let user : User;
 
 describe("Statements User", () => {
-
-    beforeEach(() => {
+    beforeEach( async () => {
         usersRepositoryInMemory = new InMemoryUsersRepository();
         statementsRepositoryInMemory = new InMemoryStatementsRepository();
         createStatementsUseCase = new CreateStatementUseCase(usersRepositoryInMemory, statementsRepositoryInMemory);
-    })
+        createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory);
 
-    it("should be able to create a deposit.", async () => {
-        
-        const user = await usersRepositoryInMemory.create({
-            name: "anderson",
-            email: "anderson2021@gmail.com",
-            password: "564565"
-        });
-
-        const statementObject : ICreateStatementDTO= {
-            user_id: user.id,
-            type: OperationType.DEPOSIT,
-            amount: 100,
-            description: "Transferência pix"
-        }
-
-        const statement = await createStatementsUseCase.execute(statementObject);
-
-        expect(statement).toHaveProperty("id");
-
-    })
-
-
-    it("should be able to create a withdraw.", async () => {
-        
-        const user = await usersRepositoryInMemory.create({
-            name: "anderson",
-            email: "anderson2021@gmail.com",
-            password: "564565"
-        });
-
-        const statementDeposit : ICreateStatementDTO= {
-            user_id: user.id,
-            type: OperationType.DEPOSIT,
-            amount: 100,
-            description: "Transferência pix"
-        }
-
-        await createStatementsUseCase.execute(statementDeposit);
-
-        const statementWIthdraw : ICreateStatementDTO= {
-            user_id: user.id,
-            type: OperationType.DEPOSIT,
-            amount: 10,
-            description: "Pagamento amazon prime"
-        }
-
-        const statement = await createStatementsUseCase.execute(statementWIthdraw);
-
-        expect(statement).toHaveProperty("id");
-
-    })
+        user = await createUserUseCase.execute(userDTO);
+    });
 
     it("should be able now create a withdraw because insufficient funds.", () => {
-        
-        
-
         expect(async () => {
-            const user = await usersRepositoryInMemory.create({
-                name: "anderson",
-                email: "anderson2021@gmail.com",
-                password: "564565"
-            });
-    
-            const statementDeposit : ICreateStatementDTO = {
-                user_id: user.id,
-                type: OperationType.DEPOSIT,
-                amount: 10,
-                description: "Transferência pix"
-            }
-    
-            await createStatementsUseCase.execute(statementDeposit);
-    
-            const statementWIthdraw : ICreateStatementDTO = {
-                user_id: user.id,
-                type: OperationType.WITHDRAW,
-                amount: 100,
-                description: "Pagamento amazon prime"
-            }
-    
-            const statement = await createStatementsUseCase.execute(statementWIthdraw);
-
-            console.log(statement)
-
+            await createStatementsUseCase.execute({...createWithdrawStatementDTO, user_id:user.id});
         }).rejects.toBeInstanceOf(CreateStatementError.InsufficientFunds);
+    });
 
-    })
+    it("should be able to create a deposit.", async () => {
+        const statement = await createStatementsUseCase.execute({...createDepositStatementDTO, user_id:user.id});
+        
+        expect(statement).toHaveProperty("id");
+    });
 
-})
+    it("should be able to create a withdraw.", async () => {
+        await createStatementsUseCase.execute({...createDepositStatementDTO, user_id:user.id});
+        const statement = await createStatementsUseCase.execute({...createWithdrawStatementDTO, user_id:user.id});
+
+        expect(statement).toHaveProperty("id");
+    });
+
+});
 
 

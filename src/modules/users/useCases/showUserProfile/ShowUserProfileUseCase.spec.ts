@@ -19,15 +19,16 @@ describe("Show user profile", () => {
         user = await createUserUseCase.execute(userDTO);
     });
 
+    it("should not be able to no show user profile.", async () => {
+        expect(async () => {
+            await showUserProfileUseCase.execute("")
+        }).rejects.toBeInstanceOf(ShowUserProfileError)
+    });
+
     it("should be able to show user profile.", async () => {
         const userProfile = await showUserProfileUseCase.execute(user.id)
 
         expect(userProfile).toHaveProperty("id", userProfile.id);
     });
 
-    it("should be able to no show user profile.", async () => {
-        expect(async () => {
-            await showUserProfileUseCase.execute("")
-        }).rejects.toBeInstanceOf(ShowUserProfileError)
-    });
 });

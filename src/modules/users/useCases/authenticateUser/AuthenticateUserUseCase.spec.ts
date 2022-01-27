@@ -23,5 +23,5 @@ describe("User Profile", () => {
         });
 
         expect(response).toHaveProperty("token");
-    })
+    });
 })
