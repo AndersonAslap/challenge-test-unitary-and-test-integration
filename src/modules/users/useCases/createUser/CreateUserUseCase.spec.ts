@@ -12,7 +12,6 @@ describe("Create User", () => {
         createUserUseCase = new CreateUserUseCase(usersRepository);
     });
 
-
     it("should be able not create a user if user exists.", async () => {
         await createUserUseCase.execute(userDTO);
 
