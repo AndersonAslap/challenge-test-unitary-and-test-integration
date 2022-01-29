@@ -36,12 +36,10 @@ describe("Get Balance Controller", () => {
         response = await request(app).get("/api/v1/statements/balance")
         .set({ Authorization: `Bearer ${token}` });
 
-        console.log(response.body)
-
-        /*expect(response.status).toBe(200);
+        expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("statement");
         expect(response.body.statement).toHaveLength(2);
-        expect(response.body).toHaveProperty("balance", 820);*/
+        expect(response.body).toHaveProperty("balance", 820);
     });
 
 });
