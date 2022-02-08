@@ -2,7 +2,8 @@ import { ICreateStatementDTO } from "../useCases/createStatement/ICreateStatemen
 
 enum OperationType {
     DEPOSIT = 'deposit',
-    WITHDRAW = 'withdraw'
+    WITHDRAW = 'withdraw',
+    TRANSFER = 'transfer'
 }
 
 export const createDepositStatementDTO: ICreateStatementDTO = {

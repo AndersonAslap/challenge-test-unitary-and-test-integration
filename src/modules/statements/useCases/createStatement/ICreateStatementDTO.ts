@@ -6,12 +6,6 @@ Pick<
   'user_id' |
   'description' |
   'amount' |
-  'type'
+  'type' |
+  'sender_id'
 >
-
-/*export interface ICreateStatementDTO {
-  user_id: string;
-  description: string;
-  amount: number;
-  type: string;
-}*/
