@@ -44,15 +44,20 @@ export class StatementsRepository implements IStatementsRepository {
       { balance: number } | { balance: number, statement: Statement[] }
     >
   {
-    const statement = await this.repository.find({
-      where: { user_id }
-    });
+
+    const statement = await this.repository.createQueryBuilder().where("user_id = :user_id OR sender_id = :user_id", {user_id}).getMany();
 
     const balance = statement.reduce((acc, operation) => {
       if (operation.type === 'deposit') {
         return acc + (operation.amount);
-      } else {
+      } else if (operation.type === 'withdraw')  {
         return acc - (operation.amount);
+      } else {
+        if (operation.sender_id === user_id) {
+          return parseFloat(acc.toString()) + parseFloat(operation.amount.toString()) ;
+        } else {
+          return acc - (operation.amount);
+        }
       }
     }, 0)
 
